@@ -6,3 +6,5 @@ resources :vacations do
     post 'validate'
   end
 end
+
+resources :vacation_types
