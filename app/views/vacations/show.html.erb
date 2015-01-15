@@ -1,0 +1,26 @@
+<h2>Vacation #<%= @vacation.id %></h2>
+
+<p>
+  <strong>User:</strong>
+  <%= @vacation.user %>
+</p>
+<p>
+  <strong>Type:</strong>
+  <%= @vacation.activity %>
+</p>
+<p>
+  <strong>Status:</strong>
+  <%= (@vacation.validator.present? && 'Validated by #{@vacation.validator}') || 'vacation pending' %>
+</p>
+<p>
+  <strong>From:</strong>
+  <%= @vacation.from %>
+</p>
+<p>
+  <strong>To:</strong>
+  <%= @vacation.to %>
+</p>
+
+<p>
+  <%= link_to 'Back', {controller: 'vacations', action: 'index'} %>
+</p>

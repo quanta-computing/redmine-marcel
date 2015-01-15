@@ -1,0 +1,42 @@
+<h2>Vacations</h2>
+
+<div class="contextual">
+  <%= link_to 'Add Vacation', {controller: 'vacations', action: 'new'}, class: 'icon icon-add' %>
+</div>
+
+<table class="list">
+
+  <tr>
+      <th>ID</th>
+      <th>User</th>
+      <th>Type</th>
+      <th>From</th>
+      <th>To</th>
+      <th>Validation</th>
+      <th>Actions</th>
+  </tr>
+
+  <% @vacations.each do |v| %>
+    <tr>
+      <td><%= link_to '#' + v.id.to_s, v %></td>
+      <td><%= v.user.name %></td>
+      <td><%= v.activity.name %></td>
+      <td><%= v.from %></td>
+      <td><%= v.to %></td>
+      <td>
+        <% if v.validated? %>
+          <%= "Validated by #{v.validator}" %>
+        <% else %>
+          <% if v.validator.present? %>
+            <%= "Rejected by #{v.validator}" %>
+          <% else %>
+            Validation pending
+          <% end %>
+        <% end %>
+      </td>
+
+      <td><%= render 'actions_form', vacation: v %></td>
+    </tr>
+  <% end %>
+
+</table>

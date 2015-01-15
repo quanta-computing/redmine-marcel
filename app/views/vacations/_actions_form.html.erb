@@ -1,0 +1,22 @@
+
+<% if vacation.validable_by? User.current %>
+  <% if !vacation.validated? %>
+    <%= form_for vacation, url: validate_vacation_path(vacation), method: :post do |f| %>
+      <%= f.hidden_field :status, value: true %>
+      <%= f.submit 'Validate' %>
+    <% end %>
+  <% end %>
+  <% if !vacation.rejected? %>
+    <%= form_for vacation, url: validate_vacation_path(vacation), method: :post do |f| %>
+      <%= f.hidden_field :status, value: false %>
+      <%= f.submit 'Reject' %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% if vacation.updatable_by? User.current %>
+  <%= link_to 'Edit', edit_vacation_path(vacation), class: 'btn btn-warning', role: 'button' %>
+  <%= form_for vacation, method: :delete do |f| %>
+    <%= f.submit 'Delete' %>
+  <% end %>
+<% end %>

@@ -1,0 +1,4 @@
+<p>
+  <label>Human Relations group</label>
+  <%= select_tag 'settings[allowed_edit_group_id]', options_for_select(Group.all.map {|g| [g.name, g.id ]}, settings['allowed_edit_group_id']) %>
+</p>
