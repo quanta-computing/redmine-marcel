@@ -1,0 +1,38 @@
+<%= form_for(@type) do |f| %>
+
+  <% if @type.errors.any? %>
+    <div id="error_explanation">
+      <ul>
+        <% @type.errors.full_messages.each do |e| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label "Name" %>
+    <br />
+    <%= f.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= f.label "Uses paid vacation days ?" %>
+    <%= f.check_box :use_paid_vacation_days %>
+  </div>
+
+  <div class="field">
+    <%= f.label "Uses recup days ?" %>
+    <%= f.check_box :use_recup_days %>
+  </div>
+
+  <div class="field">
+    <%= f.label "Uses eating tickets ?" %>
+    <%= f.check_box :use_eating_tickets %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+
+<% end %>

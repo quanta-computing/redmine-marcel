@@ -7,7 +7,7 @@ class VacationsController < ApplicationController
 
   def new
     @vacation = Vacation.new
-    @activities = TimeEntryActivity.all
+    @activities = VacationType.all
   end
 
   def edit
@@ -32,7 +32,7 @@ class VacationsController < ApplicationController
   end
 
   def create
-    @activities = TimeEntryActivity.all
+    @activities = VacationType.all
     params[:vacation].delete :status
     params[:vacation][:user_id] = User.current.id
     @vacation = Vacation.new params[:vacation]
@@ -46,10 +46,10 @@ class VacationsController < ApplicationController
   def destroy
     @vacation = Vacation.find params[:id]
     if not @vacation.updatable_by? User.current
-      redirect_to vacations_urls, alert: 'You cannot update this (permission denied)'
+      redirect_to vacations_url, alert: 'You cannot update this (permission denied)'
     end
     @vacation.destroy
-    redirect_to vacations_url, warning: 'Vacation #{@vacation.id} deleted'
+    redirect_to vacations_url, notice: 'Vacation #{@vacation.id} deleted'
   end
 
   def validate

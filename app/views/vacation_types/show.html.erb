@@ -1,0 +1,26 @@
+<h2>Vacation type <%= @type.name %></h2>
+
+<p>
+  <strong>ID:</strong>
+  <%= @type.id %>
+</p>
+
+<p>
+  <strong>Uses paid vacation days ?</strong>
+  <%= @type.use_paid_vacation_days %>
+</p>
+
+<p>
+  <strong>Uses recup days ?</strong>
+  <%= @type.use_recup_days %>
+</p>
+
+<p>
+  <strong>Uses eating tickets ?</strong>
+  <%= @type.use_eating_tickets %>
+</p>
+
+<div class="actions">
+  <%= link_to 'Edit', edit_vacation_type_url(@type) %>
+  <%= link_to 'Back', vacation_types_url %>
+</div>

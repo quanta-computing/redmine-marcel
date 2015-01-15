@@ -1,0 +1,36 @@
+<h2>Vacation types</h2>
+
+<% if VacationType.manageable_by? User.current %>
+  <div class="contextual">
+    <%= link_to "Add vacation type", new_vacation_type_url, class: 'icon icon-add' %>
+  </div>
+<% end %>
+
+<table class="list">
+
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Uses paid vacation days</th>
+      <th>Uses recup days</th>
+      <th>Use eating tickets</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @types.each do |t| %>
+      <tr>
+        <td><%= link_to "##{t.id}", t %></td>
+        <td><%= t.name %></td>
+        <td><%= t.use_paid_vacation_days %></td>
+        <td><%= t.use_recup_days %></td>
+        <td><%= t.use_eating_tickets %></td>
+
+        <td><%= render 'actions_form', type: t %></td>
+      </tr>
+    <% end %>
+  </tbody>
+
+</table>
