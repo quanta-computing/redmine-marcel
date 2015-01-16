@@ -1,5 +1,6 @@
 <h2>Vacation #<%= @vacation.id %></h2>
 
+<h4>Basic info</h4>
 <p>
   <strong>User:</strong>
   <%= @vacation.user %>
@@ -12,6 +13,8 @@
   <strong>Status:</strong>
   <%= render 'validation', vacation: @vacation %>
 </p>
+
+<h4>Dates</h4>
 <p>
   <strong>From:</strong>
   <%= @vacation.from %>
@@ -20,6 +23,13 @@
   <strong>To:</strong>
   <%= @vacation.to %>
 </p>
+<p>
+  <strong>Duration:</strong>
+  <%= @vacation.days %>
+</p>
+
+<h4>Available days (before /after)</h4>
+<%= render 'available_days', vacation: @vacation %>
 
 <div class="actions">
   <%= link_to 'Edit', edit_vacation_url(@vacation) %>
