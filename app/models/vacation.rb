@@ -1,3 +1,4 @@
+
 class Vacation < ActiveRecord::Base
 
   belongs_to :user
@@ -19,16 +20,21 @@ class Vacation < ActiveRecord::Base
   end
 
   def validable_by?(user)
-    gid = Setting.plugin_marcel[:allowed_edit_group_id]
-    return ((not gid.nil?) and user.is_or_belongs_to?(Group.where(id: gid).first))
+    Marcel::is_admin? user
+  end
+
+  def deletable_by?(user)
+    (user.id == self.user_id and not self.validated?) or self.validable_by? user
   end
 
   def updatable_by?(user)
-    return ((user.id == self.user_id and not self.validated?) or self.validable_by?(user))
+    self.validable_by?(user) and not self.validated?
   end
 
   def days
-    return (self.to.to_date - self.from.to_date).to_i
+    WorkingHours::Config.holidays = Marcel::holidays(self.from.to_date - 1, self.to.to_date + 1)
+    days = WorkingHours.working_time_between(self.from, self.to) / Marcel::seconds_in_day
+    return (2 * days).ceil / 2.0
   end
 
   def validate(status=true)
@@ -42,15 +48,15 @@ class Vacation < ActiveRecord::Base
   end
 
   def validated?
-    return self.status
+    self.status
   end
 
   def rejected?
-    return (!self.status and self.validator.present?)
+    !self.status and self.validator.present?
   end
 
   def activity
-    return (super or VacationType.none)
+    super or VacationType.none
   end
 
 end
