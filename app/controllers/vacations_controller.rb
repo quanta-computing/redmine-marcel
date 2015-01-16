@@ -47,7 +47,7 @@ class VacationsController < ApplicationController
 
   def destroy
     @vacation = Vacation.find params[:id]
-    if not @vacation.updatable_by? User.current
+    if not @vacation.deletable_by? User.current
       redirect_to vacations_url, alert: 'You cannot update this (permission denied)'
     end
     @vacation.destroy
