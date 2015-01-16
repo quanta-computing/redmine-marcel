@@ -51,7 +51,7 @@ class VacationsController < ApplicationController
       redirect_to vacations_url, alert: 'You cannot update this (permission denied)'
     end
     @vacation.destroy
-    redirect_to vacations_url, notice: 'Vacation #{@vacation.id} deleted'
+    redirect_to vacations_url, notice: "Vacation #{@vacation.id} deleted"
   end
 
   def validate
