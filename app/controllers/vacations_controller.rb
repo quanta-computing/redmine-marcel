@@ -12,6 +12,7 @@ class VacationsController < ApplicationController
 
   def edit
     @vacation = Vacation.find params[:id]
+    @activities = VacationType.all
   end
 
   def show
@@ -20,6 +21,7 @@ class VacationsController < ApplicationController
 
   def update
     @vacation = Vacation.find params[:id]
+    @activities = VacationType.all
     params[:vacation].delete :status
     if not @vacation.updatable_by? User.current
       redirect_to @vacation, alert: 'You cannot update this (permission denied)'
@@ -54,7 +56,7 @@ class VacationsController < ApplicationController
 
   def validate
     @vacation = Vacation.find params[:id]
-    status = params[:vacation].fetch(:status, true)
+    status = (params[:vacation].fetch(:status, true) == 'true')
     if @vacation.validable_by? User.current
       if @vacation.validate status
         redirect_to vacations_url, notice: "Vacation #{@vacation.id} #{(status && 'validated') || 'rejected'}"
