@@ -19,7 +19,7 @@ class VacationTypesController < ApplicationController
 
   def create
     @type = VacationType.new params[:vacation_type]
-    if not is_manager? User.current
+    if not @type.manageable_by? User.current
       redirect_to vacation_types_url, alert: "Permission denied"
     elsif @type.save
       redirect_to vacation_types_url, notice: "Vacation type '#{@type.name}' created"
@@ -30,7 +30,7 @@ class VacationTypesController < ApplicationController
 
   def update
     @type = VacationType.find params[:id]
-    if not is_manager? User.current
+    if not @type.manageable_by? User.current
       redirect_to vacation_types_url, alert: "Permission denied"
     elsif @type.update_attributes params[:vacation_type]
       redirect_to vacation_types_url, notice: "Vacation type '#{@type.name}' updated"
@@ -41,16 +41,12 @@ class VacationTypesController < ApplicationController
 
   def destroy
     @type = VacationType.find params[:id]
-    if not is_manager? User.current
+    if not @type.manageable_by? User.current
       redirect_to vacation_types_url, alert: "Permission denied"
     else
       @type.destroy
       redirect_to vacation_types_url, notice: "Vacation type '#{@type.name}' deleted"
     end
-  end
-
-  def is_manager?(user)
-    VacationType.manageable_by? user
   end
 
 end
