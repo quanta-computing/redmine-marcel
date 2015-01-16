@@ -1,9 +1,15 @@
 <% if vacation.validated? %>
+<p style="color:green">
   <%= "Validated by #{vacation.validator}" %>
+</p>
 <% else %>
   <% if vacation.validator.present? %>
+  <p style="color:red">
     <%= "Rejected by #{vacation.validator}" %>
+  </p>
   <% else %>
+  <p style="color:orange">
     Validation pending
+  </p>
   <% end %>
 <% end %>
