@@ -1,0 +1,11 @@
+<% if VacationType.manageable_by? User.current %>
+  <fieldset class="box tabular">
+    <legend>Vacation days</legend>
+    <p>
+      <%= form.number_field :paid_vacation_days %>
+    </p>
+    <p>
+      <%= form.number_field :recup_days %>
+    </p>
+  </fieldset>
+<% end %>
