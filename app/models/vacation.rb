@@ -37,12 +37,18 @@ class Vacation < ActiveRecord::Base
     return (2 * days).ceil / 2.0
   end
 
+  def paid_vacation_days
+    self.activity.use_paid_vacation_days ? self.days : 0
+  end
+
+  def recup_days
+    self.activity.use_recup_days ? self.days : 0
+  end
+
   def validate(status=true)
     if (status != self.status)
-      pv_days = self.activity.use_paid_vacation_days ? self.days : 0
-      recup_days = self.activity.use_recup_days ? self.days : 0
-      self.user.paid_vacation_days += pv_days * (status ? -1 : 1)
-      self.user.recup_days += recup_days * (status ? -1 : 1)
+      self.user.paid_vacation_days += self.paid_vacation_days * (status ? -1 : 1)
+      self.user.recup_days += self.recup_days * (status ? -1 : 1)
     end
     return (self.user.save and self.update_attributes status: status, validator_id: User.current.id)
   end
