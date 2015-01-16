@@ -1,4 +1,5 @@
 class VacationTypesController < ApplicationController
+  layout 'base'
 
   def index
     @types = VacationType.all
