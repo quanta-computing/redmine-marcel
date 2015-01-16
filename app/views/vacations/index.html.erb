@@ -26,18 +26,7 @@
         <td><%= v.activity.name %></td>
         <td><%= v.from %></td>
         <td><%= v.to %></td>
-        <td>
-          <% if v.validated? %>
-            <%= "Validated by #{v.validator}" %>
-          <% else %>
-            <% if v.validator.present? %>
-              <%= "Rejected by #{v.validator}" %>
-            <% else %>
-              Validation pending
-            <% end %>
-          <% end %>
-        </td>
-
+        <td><%= render 'validation', vacation: v %></td>
         <td><%= render 'actions_form', vacation: v %></td>
       </tr>
     <% end %>

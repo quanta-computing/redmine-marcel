@@ -1,0 +1,9 @@
+<% if vacation.validated? %>
+  <%= "Validated by #{vacation.validator}" %>
+<% else %>
+  <% if vacation.validator.present? %>
+    <%= "Rejected by #{vacation.validator}" %>
+  <% else %>
+    Validation pending
+  <% end %>
+<% end %>
