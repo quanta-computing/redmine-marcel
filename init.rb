@@ -1,12 +1,5 @@
 require 'redmine'
 
-module Marcel
-  def self.is_admin?(user)
-    gid = Setting.plugin_marcel[:allowed_edit_group_id]
-    return ((not gid.nil?) and user.is_or_belongs_to?(Group.where(id: gid).first))
-  end
-end
-
 Redmine::Plugin.register :marcel do
   name 'Marcel plugin'
   author 'Matthieu Rosinski <mro@quanta-computing.com>'
