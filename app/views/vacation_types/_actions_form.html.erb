@@ -1,6 +1,8 @@
 <% if type.class.manageable_by? User.current %>
 
-  <%= link_to 'Edit', edit_vacation_type_url(type)  %>
+  <%= form_for type, url: edit_vacation_type_url(type), method: :get do |f| %>
+    <%= f.submit 'Edit' %>
+  <% end %>
 
   <%= form_for type, method: :delete do |f| %>
     <%= f.submit 'Delete' %>

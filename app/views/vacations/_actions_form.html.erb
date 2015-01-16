@@ -15,7 +15,9 @@
 <% end %>
 
 <% if vacation.updatable_by? User.current %>
-  <%= link_to 'Edit', edit_vacation_path(vacation), class: 'btn btn-warning', role: 'button' %>
+  <%= form_for vacation, url: edit_vacation_path(vacation), method: :get do |f| %>
+    <%= f.submit 'Edit' %>
+  <% end %>
 <% end %>
 
 <% if vacation.deletable_by? User.current %>
