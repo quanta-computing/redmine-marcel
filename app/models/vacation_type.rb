@@ -6,8 +6,11 @@ class VacationType < ActiveRecord::Base
   end
 
   def self.manageable_by?(user)
-    gid = Setting.plugin_marcel[:allowed_edit_group_id]
-    return ((not gid.nil?) and user.is_or_belongs_to?(Group.where(id: gid).first))
+    Marcel::is_admin? user
+  end
+
+  def manageable_by?(user)
+    self.class.manageable_by? user
   end
 
   def self.none
