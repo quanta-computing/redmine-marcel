@@ -27,8 +27,18 @@ class Vacation < ActiveRecord::Base
     return ((user.id == self.user_id and not self.validated?) or self.validable_by?(user))
   end
 
+  def days
+    return (self.to.to_date - self.from.to_date).to_i
+  end
+
   def validate(status=true)
-    return self.update_attributes status: status, validator_id: User.current.id
+    if (status != self.status)
+      pv_days = self.activity.use_paid_vacation_days ? self.days : 0
+      recup_days = self.activity.use_recup_days ? self.days : 0
+      self.user.paid_vacation_days += pv_days * (status ? -1 : 1)
+      self.user.recup_days += recup_days * (status ? -1 : 1)
+    end
+    return (self.user.save and self.update_attributes status: status, validator_id: User.current.id)
   end
 
   def validated?
