@@ -17,15 +17,35 @@
   </div>
   <div class="field">
     <%= f.label :from %><br />
-    <%= f.text_field :from %><%= calendar_for('vacation_from') %>
+    <%= f.text_field :from %>
+    <%= javascript_tag do %>
+      $(function(){
+        d = new Date();
+        $('#vacation_from').appendDtpicker({
+          'current': d.getFullYear() + '-' + ('0' + (1 + d.getMonth())).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) + ' 10:00'
+        });
+      });
+    <% end %>
   </div>
   <div class="field">
     <%= f.label :to %><br />
-    <%= f.text_field :to %><%= calendar_for('vacation_to') %>
+    <%= f.text_field :to %>
+    <%= javascript_tag do %>
+      $(function(){
+        d = new Date($('#vacation_from').val());
+        $('#vacation_to').appendDtpicker({
+          'current': d.getFullYear() + '-' + ('0' + (1 + d.getMonth())).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) + ' 23:00'
+        });
+      });
+    <% end %>
   </div>
 
   <div class="actions">
     <%= f.submit %>
   </div>
 
+<% end %>
+<% content_for :header_tags do %>
+    <%= javascript_include_tag 'jquery.simple-dtpicker.js', plugin: 'marcel' %>
+    <%= stylesheet_link_tag 'jquery.simple-dtpicker.css', plugin: 'marcel' %>
 <% end %>
