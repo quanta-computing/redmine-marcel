@@ -1,6 +1,6 @@
 <tr>
   <td><%= link_to '#' + vacation.id.to_s, vacation %></td>
-  <td><%= vacation.user.name %></td>
+  <td><%= link_to vacation.user, edit_user_url(vacation.user) %></td>
   <td><%= vacation.activity.name %></td>
   <td><%= vacation.from %></td>
   <td><%= vacation.to %></td>
