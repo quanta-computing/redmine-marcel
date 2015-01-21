@@ -13,7 +13,7 @@
 
   <div class="field">
     <% if Marcel::is_admin? User.current %>
-      <%= f.collection_select :user_id, User.all, :id, :name, selected: [User.current.id, User.current.name] %>
+      <%= f.collection_select :user_id, User.all.to_a.select { |u| u.active? }, :id, :name, selected: [User.current.id, User.current.name] %>
     <% else %>
       <%= f.hidden_field :user_id, value: User.current.id %>
     <% end %>
