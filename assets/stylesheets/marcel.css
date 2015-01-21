@@ -1,0 +1,15 @@
+input.btn-validate {
+  background-color: green;
+}
+
+input.btn-reject {
+  background-color: orange;
+}
+
+input.btn-delete {
+  background-color: red;
+}
+
+table.list td {
+  vertical-align: middle;
+}

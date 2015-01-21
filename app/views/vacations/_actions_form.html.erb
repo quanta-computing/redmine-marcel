@@ -3,25 +3,25 @@
   <% if !vacation.validated? %>
     <%= form_for vacation, url: validate_vacation_path(vacation), method: :post do |f| %>
       <%= f.hidden_field :status, value: true %>
-      <%= f.submit 'Validate' %>
+      <%= f.submit 'Validate', class: 'btn-validate' %>
     <% end %>
   <% end %>
   <% if !vacation.rejected? %>
     <%= form_for vacation, url: validate_vacation_path(vacation), method: :post do |f| %>
       <%= f.hidden_field :status, value: false %>
-      <%= f.submit 'Reject' %>
+      <%= f.submit 'Reject', class: 'btn-reject' %>
     <% end %>
   <% end %>
 <% end %>
 
 <% if vacation.updatable_by? User.current %>
   <%= form_for vacation, url: edit_vacation_path(vacation), method: :get do |f| %>
-    <%= f.submit 'Edit' %>
+    <%= f.submit 'Edit', class: 'btn-edit' %>
   <% end %>
 <% end %>
 
 <% if vacation.deletable_by? User.current %>
   <%= form_for vacation, method: :delete do |f| %>
-    <%= f.submit 'Delete' %>
+    <%= f.submit 'Delete', class: 'btn-delete', data: { confirm: 'Are you sure ?' + (vacation.validated? ? ' Vacation days will NOT be restored.' : '')} %>
   <% end %>
 <% end %>
