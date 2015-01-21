@@ -12,10 +12,19 @@
   <% end %>
 
   <div class="field">
+    <% if Marcel::is_admin? User.current %>
+      <%= f.collection_select :user_id, User.all, :id, :name, selected: [User.current.id, User.current.name] %>
+    <% else %>
+      <%= f.hidden_field :user_id, value: User.current.id %>
+    <% end %>
+  </div>
+
+  <div class="field">
     <%= f.label :activity %><br />
     <%= f.collection_select :activity_id, @activities, :id, :name %>
     <%= javascript_tag "$('#vacation_activity_id').focus();" %>
   </div>
+
   <div class="field">
     <%= f.label :from %><br />
     <%= f.text_field :from %>
@@ -28,6 +37,7 @@
       });
     <% end %>
   </div>
+
   <div class="field">
     <%= f.label :to %><br />
     <%= f.text_field :to %>

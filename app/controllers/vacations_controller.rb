@@ -2,7 +2,9 @@ class VacationsController < ApplicationController
   layout 'base'
 
   def index
-    @vacations = Vacation.all
+    @vacations = Vacation.all.to_a.group_by &:validator_id?
+    @vacations[true] ||= []
+    @vacations[false] ||= []
   end
 
   def new
@@ -36,12 +38,15 @@ class VacationsController < ApplicationController
   def create
     @activities = VacationType.all
     params[:vacation].delete :status
-    params[:vacation][:user_id] = User.current.id
-    @vacation = Vacation.new params[:vacation]
-    if @vacation.save
-      redirect_to vacations_url, notice: "Vacation #{@vacation.id} created"
+    if params[:vacation][:user_id].to_i != User.current.id and not Marcel::is_admin? User.current
+      redirect_to vacations_url, alert: 'You cannot create a vacation for another user'
     else
-      render 'new'
+      @vacation = Vacation.new params[:vacation]
+      if @vacation.save
+        redirect_to vacations_url, notice: "Vacation #{@vacation.id} created"
+      else
+        render 'new'
+      end
     end
   end
 
