@@ -4,36 +4,31 @@
   <%= link_to 'Add Vacation', new_vacation_url, class: 'icon icon-add' %>
 </div>
 
-<table class="list">
 
-  <thead>
-    <tr>
-        <th>ID</th>
-        <th>User</th>
-        <th>Type</th>
-        <th>From</th>
-        <th>To</th>
-        <th>Duration</th>
-        <th>Remaining days (after)</th>
-        <th>Validation</th>
-        <th>Actions</th>
-    </tr>
-  </thead>
+<% @vacations.keys.sort {|k| k ? 1 : 0 }.each do |status| %>
+<div>
+  <h3><%= status ? 'Vacations' : 'Pending validation' %></h3>
 
-  <tbody>
-    <% @vacations.each do |v| %>
-      <tr>
-        <td><%= link_to '#' + v.id.to_s, v %></td>
-        <td><%= v.user.name %></td>
-        <td><%= v.activity.name %></td>
-        <td><%= v.from %></td>
-        <td><%= v.to %></td>
-        <td><%= v.days %> days</td>
-        <td><%= render 'available_days', vacation: v %></td>
-        <td><%= render 'validation', vacation: v %></td>
-        <td><%= render 'actions_form', vacation: v %></td>
-      </tr>
-    <% end %>
-  </tbody>
+  <% if not @vacations[status].length.zero? %>
+    <table class="list">
 
-</table>
+      <%= render 'list_head' %>
+
+      <tbody>
+        <% @vacations[status].each do |v| %>
+          <%= render 'list_entry', vacation: v %>
+        <% end %>
+      </tbody>
+
+    </table>
+  <% else %>
+    <p>
+      No <%= status ? '' : 'pending ' %>vacations
+    </p>
+  <% end %>
+</div>
+<% end %>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'marcel.css', plugin: 'marcel' %>
+<% end %>
