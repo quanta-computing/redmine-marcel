@@ -14,6 +14,7 @@
   <div class="field">
     <%= f.label :activity %><br />
     <%= f.collection_select :activity_id, @activities, :id, :name %>
+    <%= javascript_tag "$('#vacation_activity_id').focus();" %>
   </div>
   <div class="field">
     <%= f.label :from %><br />
@@ -22,7 +23,7 @@
       $(function(){
         d = new Date();
         $('#vacation_from').appendDtpicker({
-          'current': d.getFullYear() + '-' + ('0' + (1 + d.getMonth())).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) + ' 10:00'
+          'current': d.getFullYear() + '-' + ('0' + (1 + d.getMonth())).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) + ' 8:00'
         });
       });
     <% end %>
@@ -32,9 +33,15 @@
     <%= f.text_field :to %>
     <%= javascript_tag do %>
       $(function(){
-        d = new Date($('#vacation_from').val());
         $('#vacation_to').appendDtpicker({
-          'current': d.getFullYear() + '-' + ('0' + (1 + d.getMonth())).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) + ' 23:00'
+          'onShow': function(handler) {
+            if (!$('#vacation_to').val()) {
+              d = new Date($('#vacation_from').val());
+              handler.setDate(d.getFullYear() + '-' + ('0' + (1 + d.getMonth())).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) + ' 20:00')
+            }
+          },
+          'autodateOnStart': ($('#vacation_to').val() ? true : false),
+          'futureOnly': ($('#vacation_to').val() ? false : true),
         });
       });
     <% end %>
@@ -45,6 +52,7 @@
   </div>
 
 <% end %>
+
 <% content_for :header_tags do %>
     <%= javascript_include_tag 'jquery.simple-dtpicker.js', plugin: 'marcel' %>
     <%= stylesheet_link_tag 'jquery.simple-dtpicker.css', plugin: 'marcel' %>
