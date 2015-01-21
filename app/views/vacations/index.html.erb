@@ -1,12 +1,13 @@
 <h2>Vacations</h2>
 
 <div class="contextual">
-  <%= link_to 'Add Vacation', new_vacation_url, class: 'icon icon-add' %>
+  <%= link_to 'Add Vacation', new_vacation_url, class: 'icon icon-add' %> |
+  <%= link_to 'Vacation types', vacation_types_url %>
 </div>
 
 
 <% @vacations.keys.sort {|k| k ? 1 : 0 }.each do |status| %>
-<div>
+<div class="section">
   <h3><%= status ? 'Vacations' : 'Pending validation' %></h3>
 
   <% if not @vacations[status].length.zero? %>

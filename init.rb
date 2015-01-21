@@ -9,8 +9,6 @@ Redmine::Plugin.register :marcel do
   author_url 'http://quanta-computing.com/'
 
   menu :top_menu, :vacations, { controller: 'vacations', action: 'index'}, caption: 'Marcel'
-  menu :application_menu, :vacations, { controller: 'vacations', action: 'index'}, caption: 'Vacations'
-  menu :application_menu, :vacation_types, { controller: 'vacation_types', action: 'index'}, caption: 'Vacation types'
   settings default: {allowed_edit_group_id: nil}, partial: 'settings/marcel_settings'
 
   User.safe_attributes 'paid_vacation_days', 'recup_days', if: lambda {|user, current_user| Marcel::is_admin?(current_user)}
