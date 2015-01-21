@@ -2,10 +2,10 @@
   <fieldset class="box tabular">
     <legend>Vacation days</legend>
     <p>
-      <%= form.number_field :paid_vacation_days %>
+      <%= form.text_field :paid_vacation_days, class: 'float_cf' %>
     </p>
     <p>
-      <%= form.number_field :recup_days %>
+      <%= form.text_field :recup_days, class: 'float_cf' %>
     </p>
   </fieldset>
 <% end %>
