@@ -14,7 +14,7 @@ class Vacation < ActiveRecord::Base
 
 
   def to_greater_than_from
-    unless self.to > self.from
+    if self.to.present? and self.from.present? and self.to <= self.from
       self.errors.add :to, 'Ending date must be greater than beginning date'
     end
   end
