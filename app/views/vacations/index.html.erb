@@ -14,8 +14,8 @@
         <th>From</th>
         <th>To</th>
         <th>Duration</th>
+        <th>Remaining days (after)</th>
         <th>Validation</th>
-        <th>Available days</th>
         <th>Actions</th>
     </tr>
   </thead>
@@ -29,8 +29,8 @@
         <td><%= v.from %></td>
         <td><%= v.to %></td>
         <td><%= v.days %> days</td>
-        <td><%= render 'validation', vacation: v %></td>
         <td><%= render 'available_days', vacation: v %></td>
+        <td><%= render 'validation', vacation: v %></td>
         <td><%= render 'actions_form', vacation: v %></td>
       </tr>
     <% end %>
