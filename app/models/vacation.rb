@@ -33,7 +33,7 @@ class Vacation < ActiveRecord::Base
 
   def days
     WorkingHours::Config.holidays = Marcel::holidays(self.from.to_date - 1, self.to.to_date + 1)
-    days = WorkingHours.working_time_between(self.from, self.to) / Marcel::seconds_in_day
+    days = WorkingHours.working_time_between(self.from, self.to) / Marcel::SECONDS_IN_DAY
     return (2 * days).ceil / 2.0
   end
 
