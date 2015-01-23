@@ -1,4 +1,4 @@
-<% if VacationType.manageable_by? User.current %>
+<% if Marcel::is_admin? User.current %>
   <fieldset class="box tabular">
     <legend>Vacation days</legend>
     <p>
@@ -6,6 +6,13 @@
     </p>
     <p>
       <%= form.text_field :recup_days, class: 'float_cf' %>
+    </p>
+  </fieldset>
+
+  <fieldset class="box tabular">
+    <legend>Time entries reminder</legend>
+    <p>
+      <%= form.select :time_remind_level, Marcel::Reminder::REMIND_LEVEL_SELECT_OPTS %>
     </p>
   </fieldset>
 <% end %>

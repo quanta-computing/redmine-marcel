@@ -2,3 +2,4 @@
 en:
   field_paid_vacation_days: "Paid vacation days"
   field_recup_days: "Recup days"
+  field_time_remind_level: "Time reminder notify level"
