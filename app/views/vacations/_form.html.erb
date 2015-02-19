@@ -27,20 +27,24 @@
 
   <div class="field">
     <%= f.label :from %><br />
-    <%= f.text_field :from %>
+    <%= f.text_field :from, value: @vacation.from %>
     <%= javascript_tag do %>
       $(function(){
-        d = new Date();
-        $('#vacation_from').appendDtpicker({
-          'current': d.getFullYear() + '-' + ('0' + (1 + d.getMonth())).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) + ' 8:00'
-        });
+        if ($('#vacation_from').val) {
+            $('#vacation_from').appendDtpicker();
+        } else {
+          d = new Date();
+          $('#vacation_from').appendDtpicker({
+            'current': d.getFullYear() + '-' + ('0' + (1 + d.getMonth())).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) + ' 8:00'
+          });
+        }
       });
     <% end %>
   </div>
 
   <div class="field">
     <%= f.label :to %><br />
-    <%= f.text_field :to %>
+    <%= f.text_field :to, value: @vacation.to %>
     <%= javascript_tag do %>
       $(function(){
         $('#vacation_to').appendDtpicker({
