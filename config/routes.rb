@@ -4,6 +4,7 @@
 resources :vacations do
   member do
     post 'validate'
+    post 'account'
   end
 end
 

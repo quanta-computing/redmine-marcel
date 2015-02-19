@@ -28,7 +28,11 @@ class Vacation < ActiveRecord::Base
   end
 
   def updatable_by?(user)
-    self.validable_by?(user) and not self.validated?
+    self.deletable_by?(user) and not self.validated?
+  end
+
+  def accountable_by?(user)
+    self.validated? and self.validable_by? user
   end
 
   def days
@@ -59,6 +63,10 @@ class Vacation < ActiveRecord::Base
 
   def rejected?
     !self.status and self.validator.present?
+  end
+
+  def accounted?
+    self.accounted
   end
 
   def activity

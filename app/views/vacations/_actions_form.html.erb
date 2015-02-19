@@ -25,3 +25,15 @@
     <%= f.submit 'Delete', class: 'btn-delete', data: { confirm: 'Are you sure ?' + (vacation.validated? ? ' Vacation days will NOT be restored.' : '')} %>
   <% end %>
 <% end %>
+
+<% if vacation.accountable_by? User.current %>
+  <%= form_for vacation, url: account_vacation_path(vacation), method: :post do |f| %>
+    <% if vacation.accounted? %>
+      <%= f.hidden_field :accounted, value: false %>
+      <%= f.submit 'Unaccount', class: 'btn-reject' %>
+    <% else %>
+      <%= f.hidden_field :accounted, value: true %>
+      <%= f.submit 'Account', class: 'btn-validate' %>
+    <% end %>
+  <% end %>
+<% end %>

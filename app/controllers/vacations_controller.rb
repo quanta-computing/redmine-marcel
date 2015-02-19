@@ -73,4 +73,18 @@ class VacationsController < ApplicationController
     end
   end
 
+  def account
+    @vacation = Vacation.find params[:id]
+    accounted = (params[:vacation].fetch(:accounted, true) == 'true')
+    if @vacation.accountable_by? User.current
+      if @vacation.update_attributes accounted: accounted
+        redirect_to vacations_url, notice: "Vacation #{@vacation.id} #{(accounted && 'accounted') || 'unacounted'}"
+      else
+        redirect_to vacations_url, alert: 'Error'
+      end
+    else
+      redirect_to vacations_url, alert: 'You cannot account this (permission denied)'
+    end
+  end
+
 end

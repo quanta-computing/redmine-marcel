@@ -7,5 +7,7 @@
   <td><%= vacation.days %> days</td>
   <td><%= render 'available_days', vacation: vacation %></td>
   <td><%= render 'validation', vacation: vacation %></td>
+  <td><% if vacation.accounted? %>X<% end %></td>
+
   <td><%= render 'actions_form', vacation: vacation %></td>
 </tr>
