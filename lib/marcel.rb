@@ -21,13 +21,19 @@ module Marcel
   end
 
   def self.last_worked_day(user, day=Time.now)
-    vacations = Vacation.where(user_id: user.id, status: true).to_a
-    begin
-      day -= 1.days
-    end while Holidays.on(day, :fr).any? or
-              vacations.any?{ |v| day >= v.from and day <= v.to } or
-              not WorkingHours.working_day? day
-    return day
+    Vacation.where(user_id: user.id, status: true).to_a.tap do |vacations|
+      begin
+        day -= 1.days
+      end while Marcel::is_working? user, day, vacations
+      return day
+    end
+  end
+
+  def self.is_working?(user, t=Time.now, vacations=nil)
+    vacations ||= Vacation.where(user_id: user.id).where("? BETWEEN `from` AND `to`", t).to_a
+    return ((not Holidays.on(t, :fr).any?) and
+            (not vacations.any?{|v| v.from <= t and v.to >= t}) and
+            WorkingHours.in_working_hours? t)
   end
 
   def self.holidays(from, to)
