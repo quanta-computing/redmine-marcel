@@ -30,7 +30,7 @@
     <%= f.text_field :from, value: @vacation.from %>
     <%= javascript_tag do %>
       $(function(){
-        if ($('#vacation_from').val) {
+        if ($('#vacation_from').val()) {
             $('#vacation_from').appendDtpicker();
         } else {
           d = new Date();
