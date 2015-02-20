@@ -1,6 +1,8 @@
 
 module Marcel
 
+  TIMEZONE = 'Europe/Paris'
+
   HOURS_IN_DAY = 8
   SECONDS_IN_DAY = 3600 * HOURS_IN_DAY
 

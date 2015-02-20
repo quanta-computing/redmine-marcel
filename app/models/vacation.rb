@@ -12,6 +12,12 @@ class Vacation < ActiveRecord::Base
   validates_presence_of :to
   validate :to_greater_than_from
 
+  after_destroy :delete_gcal_event
+
+  scope :gcal_update_needed, -> do
+    self.where %q{(gcal_event_id IS NULL AND status = 1)
+                  OR (gcal_event_id IS NOT NULL AND status = 0)}
+  end
 
   def to_greater_than_from
     if self.to.present? and self.from.present? and self.to <= self.from
@@ -54,7 +60,35 @@ class Vacation < ActiveRecord::Base
       self.user.paid_vacation_days += self.paid_vacation_days * (status ? -1 : 1)
       self.user.recup_days += self.recup_days * (status ? -1 : 1)
     end
-    return (self.user.save and self.update_attributes status: status, validator_id: User.current.id)
+    ret = (self.user.save and self.update_attributes status: status, validator_id: User.current.id)
+    if status and not self.gcal_event_id.present?
+      self.create_gcal_event
+    elsif self.gcal_event_id.present? and not status
+      self.delete_gcal_event
+    end
+    return ret
+  end
+
+  def reject
+    self.validate false
+  end
+
+  def update_gcal_event action
+    Marcel::Gcal::connection do |client, auth|
+      Marcel::Gcal.send "#{action}_vacation_event", client, auth, self
+    end
+  rescue Exception => e
+    logger.error "Cannot #{action} gcal event #{self.gcal_event_id} for vacation #{self.id}: #{e.message}"
+  end
+
+  def create_gcal_event
+    self.update_gcal_event :create
+  end
+
+  def delete_gcal_event
+    if self.gcal_event_id.present?
+      self.update_gcal_event :delete
+    end
   end
 
   def validated?
@@ -67,6 +101,18 @@ class Vacation < ActiveRecord::Base
 
   def accounted?
     self.accounted
+  end
+
+  def validator_name
+    self.validator.present? ? self.validator.name : 'Unknown'
+  end
+
+  def event_title
+    "#{self.user.name} - #{self.activity.name}"
+  end
+
+  def event_description
+    "#{self.comment}\n\nValidated by: #{self.validator_name}"
   end
 
   def activity

@@ -25,6 +25,7 @@ class VacationsController < ApplicationController
     @vacation = Vacation.find params[:id]
     @activities = VacationType.all
     params[:vacation].delete :status
+    params[:vacation].delete :gcal_event_id
     if not @vacation.updatable_by? User.current
       redirect_to @vacation, alert: 'You cannot update this (permission denied)'
     end
