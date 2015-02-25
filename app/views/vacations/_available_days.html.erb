@@ -2,14 +2,14 @@
   <% if vacation.activity.use_paid_vacation_days %>
     <p>
       <strong>Paid vacation:</strong>
-      <%= vacation.user.paid_vacation_days - vacation.paid_vacation_days %>
+      <%= number_with_precision vacation.user.paid_vacation_days - vacation.paid_vacation_days, precision: 2 %>
     </p>
   <% end %>
 
   <% if vacation.activity.use_recup_days %>
     <p>
       <strong>Recup:</strong>
-      <%= vacation.user.recup_days - vacation.recup_days %>
+      <%= number_with_precision vacation.user.recup_days - vacation.recup_days, precision: 2 %>
     </p>
   <% end %>
 <% end %>
