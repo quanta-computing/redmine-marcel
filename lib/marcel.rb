@@ -26,7 +26,7 @@ module Marcel
     Vacation.where(user_id: user.id, status: true).to_a.tap do |vacations|
       begin
         day -= 1.days
-      end while Marcel::is_working? user, day, vacations
+      end while not Marcel::is_working? user, day, vacations
       return day
     end
   end
