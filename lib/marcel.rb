@@ -43,7 +43,7 @@ module Marcel
   end
 
   def self.working_days_between(from, to)
-    WorkingHours.working_time_between(from, to).to_i / Marcel::SECONDS_IN_DAY - Marcel::holidays(from, to).count
+    WorkingHours.working_time_between(from, to) / Marcel::SECONDS_IN_DAY - Marcel::holidays(from, to).count
   end
 
 end
