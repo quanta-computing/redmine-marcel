@@ -1,0 +1,46 @@
+<h2>Vacations report</h2>
+
+<div class="filters">
+  <%= form_tag report_vacations_url, method: :get do %>
+    <% {from: @from, to: @to}.each do |filter, value| %>
+      <p>
+        <strong><%= label_tag filter.capitalize %></strong>
+        <%= select_month value.month, field_name: "#{filter}_month" %>
+        <%= select_year value.year, field_name: "#{filter}_year" %>
+      </p>
+    <% end %>
+    <%= submit_tag 'Filter' %>
+  <% end %>
+</div>
+
+<div class="contextual">
+  <%= link_to 'Back', vacations_url %>
+</div>
+
+<div class="section">
+  <table class="list">
+    <thead>
+      <tr>
+        <th>User</th>
+        <% @vacation_types.each do |type| %>
+          <th><%= type.name %></th>
+        <% end %>
+        <th>Total</th>
+        <th>Lunch vouchers</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @user_reports.each do |user_id, report| %>
+        <tr>
+          <td><%= @users.find{|user| user.id == user_id} %></td>
+          <% @vacation_types.each do |type| %>
+            <td><%= report[:vacations][type.id] %></td>
+          <% end %>
+          <td><%= report[:vacations].values.sum %></td>
+          <td><%= report[:eating_tickets] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

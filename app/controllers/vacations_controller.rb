@@ -88,4 +88,21 @@ class VacationsController < ApplicationController
     end
   end
 
+  def report
+    { 'from_year' => Time.now.year,
+      'from_month' => Time.now.month,
+      'to_year' => Time.now.year,
+      'to_month' => Time.now.month
+    }.merge(params.fetch(:date, {})).tap do |dates|
+      @from = Time.new(dates['from_year'], dates['from_month']).beginning_of_month
+      @to = Time.new(dates['to_year'], dates['to_month']).end_of_month
+    end
+    if @from > @to
+      redirect_to report_vacations_url, alert: 'Error: "From" cannot be greater than "To"'
+    end
+    @users = User.status(User::STATUS_ACTIVE).to_a
+    @vacation_types = VacationType.all.to_a
+    @user_reports = Vacation.report @from, @to, @users, @vacation_types
+
+  end
 end

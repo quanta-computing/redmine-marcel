@@ -6,6 +6,10 @@ resources :vacations do
     post 'validate'
     post 'account'
   end
+
+  collection do
+    get 'report'
+  end
 end
 
 resources :vacation_types
