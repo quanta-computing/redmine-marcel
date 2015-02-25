@@ -144,19 +144,22 @@ class Vacation < ActiveRecord::Base
     users ||= User.status(User::STATUS_ACTIVE).to_a
     vacation_types ||= VacationType.all.to_a
 
-    vacation_values = vacation_types.reduce Hash.new do |memo, type|
-      memo.merge type.id => 0
-    end
     vacations = Vacation.validated.between(from, to).includes(:activity)
 
     users.reduce Hash.new do |reports, user|
       reports.merge user.id => {
-        vacations: vacation_values.clone,
+        vacations: vacation_types.reduce({}){ |memo, type|
+                      memo.merge type.id => { days: 0, eating_tickets: 0 }
+                   },
         eating_tickets: Marcel::EatingTickets::user_eating_tickets(user, from, to, vacations)
       }
     end.tap do |reports|
       vacations.each do |vacation|
-        reports[vacation.user_id][:vacations][vacation.activity_id] += vacation.days
+        {days: vacation.days, eating_tickets: vacation.eating_tickets}.tap do |values|
+          reports[vacation.user_id][:vacations][vacation.activity_id].merge!(values) do |key, oldval, newval|
+            oldval + newval
+          end
+        end
       end
     end
   end
