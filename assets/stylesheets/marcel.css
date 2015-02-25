@@ -17,3 +17,16 @@ table.list td {
 div.section {
   margin-top: 30px;
 }
+
+div.legend {
+  font-style: oblique;
+  font-size: 95%;
+}
+
+span.filter + span.filter {
+  margin-left: 15px;
+}
+
+.pull-right {
+  float: right;
+}

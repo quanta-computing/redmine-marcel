@@ -1,23 +1,22 @@
 <h2>Vacations report</h2>
 
-<div class="filters">
+<div class="section filters">
+  <h4>Filters</h4>
   <%= form_tag report_vacations_url, method: :get do %>
     <% {from: @from, to: @to}.each do |filter, value| %>
-      <p>
-        <strong><%= label_tag filter.capitalize %></strong>
+      <span class="filter">
+        <strong><%= label_tag "#{filter.capitalize} : " %></strong>
         <%= select_month value.month, field_name: "#{filter}_month" %>
         <%= select_year value.year, field_name: "#{filter}_year" %>
-      </p>
+      </span>
     <% end %>
-    <%= submit_tag 'Filter' %>
+    <%= submit_tag 'Filter', class: 'pull-right' %>
   <% end %>
 </div>
 
-<div class="contextual">
-  <%= link_to 'Back', vacations_url %>
-</div>
-
 <div class="section">
+  <h4>Report</h4>
+
   <table class="list">
     <thead>
       <tr>
@@ -33,14 +32,51 @@
     <tbody>
       <% @user_reports.each do |user_id, report| %>
         <tr>
-          <td><%= @users.find{|user| user.id == user_id} %></td>
+          <td>
+            <% @users.find{|user| user.id == user_id}.tap do |user| %>
+              <%= link_to user, user_url(user) %>
+            <% end %>
+          </td>
           <% @vacation_types.each do |type| %>
-            <td><%= report[:vacations][type.id] %></td>
+            <td>
+              <%= report[:vacations][type.id][:days] %>
+              (<%= report[:vacations][type.id][:eating_tickets] %>)
+            </td>
           <% end %>
-          <td><%= report[:vacations].values.sum %></td>
+          <td><%= report[:vacations].values.sum{ |vacation| vacation[:days] } %></td>
           <td><%= report[:eating_tickets] %></td>
         </tr>
       <% end %>
     </tbody>
   </table>
 </div>
+
+<div class="section">
+  <h4>Legend</h4>
+
+  <div class="legend">
+    <p>
+      For each vacation type, the first number is the number of days spent by the
+      given user;
+    </p>
+    <p>
+      The second number is the number of lunch vouchers used.
+    </p>
+    <p>
+      Those numbers may differ because a lunch voucher is used if the user is not
+      present for at least half-the-day.
+      <br />
+      (ex: A vacation between 2015-02-25 12:00 and 2015-02-27 12:00 will use 3 lunch vouchers
+      since the user will be absent more than half-a-day on those 3 days)
+    </p>
+  </div>
+
+</div>
+
+<div class="section links">
+  <%= link_to 'Back', vacations_url %>
+</div>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'marcel.css', plugin: 'marcel' %>
+<% end %>
