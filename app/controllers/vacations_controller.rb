@@ -2,7 +2,7 @@ class VacationsController < ApplicationController
   layout 'base'
 
   def index
-    @vacations = Vacation.order('`from`' => 'desc').to_a.group_by &:validator_id?
+    @vacations = Vacation.order('`from` DESC').to_a.group_by &:validator_id?
     @vacations[true] ||= []
     @vacations[false] ||= []
   end
