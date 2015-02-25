@@ -3,6 +3,10 @@
   <label>Human Relations group</label>
   <%= select_tag 'settings[allowed_edit_group_id]', options_for_select(Group.all.map {|g| [g.name, g.id ]}, settings[:allowed_edit_group_id]) %>
 </p>
+<p>
+  <label>Employees group</label>
+  <%= select_tag 'settings[reporting_group_id]', options_for_select(Group.all.map {|g| [g.name, g.id ]}, settings[:reporting_group_id]) %>
+</p>
 
 <h4>Google calendar settings</h4>
 <p>

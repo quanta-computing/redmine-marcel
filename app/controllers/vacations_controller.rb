@@ -2,7 +2,7 @@ class VacationsController < ApplicationController
   layout 'base'
 
   def index
-    @vacations = Vacation.all.to_a.group_by &:validator_id?
+    @vacations = Vacation.order('`from`').to_a.group_by &:validator_id?
     @vacations[true] ||= []
     @vacations[false] ||= []
   end
@@ -100,9 +100,13 @@ class VacationsController < ApplicationController
     if @from > @to
       redirect_to report_vacations_url, alert: 'Error: "From" cannot be greater than "To"'
     end
-    @users = User.status(User::STATUS_ACTIVE).to_a
+    Setting.plugin_marcel[:reporting_group_id].tap do |reporting_group|
+      User.status(User::STATUS_ACTIVE).tap do |scope|
+        scope = scope.in_group(reporting_group) unless reporting_group.nil?
+        @users = scope.to_a
+      end
+    end
     @vacation_types = VacationType.all.to_a
     @user_reports = Vacation.report @from, @to, @users, @vacation_types
-
   end
 end

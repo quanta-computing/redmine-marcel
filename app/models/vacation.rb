@@ -54,9 +54,7 @@ class Vacation < ActiveRecord::Base
   end
 
   def days
-    days = (WorkingHours.working_time_between(self.from, self.to) / Marcel::SECONDS_IN_DAY) -
-            Marcel::holidays(self.from.beginning_of_day, self.to.end_of_day).count
-    p (2.0 * days).ceil / 2.0
+    (2.0 * Marcel::working_days_between(self.from, self.to)).ceil / 2.0
   end
 
   def paid_vacation_days
@@ -144,7 +142,7 @@ class Vacation < ActiveRecord::Base
     users ||= User.status(User::STATUS_ACTIVE).to_a
     vacation_types ||= VacationType.all.to_a
 
-    vacations = Vacation.validated.between(from, to).includes(:activity)
+    vacations = Vacation.of_users(users).validated.between(from, to).includes(:activity)
 
     users.reduce Hash.new do |reports, user|
       reports.merge user.id => {
