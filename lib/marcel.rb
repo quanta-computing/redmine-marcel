@@ -42,4 +42,8 @@ module Marcel
     Holidays.between(from, to, :fr).map { |h| h[:date] }
   end
 
+  def self.working_days_between(from, to)
+    WorkingHours.working_time_between(from, to).to_i / Marcel::SECONDS_IN_DAY - Marcel::holidays(from, to).count
+  end
+
 end

@@ -14,7 +14,7 @@ class VacationType < ActiveRecord::Base
   end
 
   def self.none
-    return self.new name: 'Unknown'
+    return self.new name: 'Unknown', use_eating_tickets: false
   end
 
 end

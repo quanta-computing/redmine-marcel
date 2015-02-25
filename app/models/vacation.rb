@@ -19,6 +19,18 @@ class Vacation < ActiveRecord::Base
                   OR (gcal_event_id IS NOT NULL AND status = 0)}
   end
 
+  scope :between, lambda { |from, to|
+    self.where("`from` >= ?", from).where("`to` <= ?", to)
+  }
+
+  scope :of_users, lambda { |users|
+    self.where(user_id: users)
+  }
+
+  scope :validated, -> do
+    self.where(status: true)
+  end
+
   def to_greater_than_from
     if self.to.present? and self.from.present? and self.to <= self.from
       self.errors.add :to, 'Ending date must be greater than beginning date'
@@ -42,9 +54,9 @@ class Vacation < ActiveRecord::Base
   end
 
   def days
-    WorkingHours::Config.holidays = Marcel::holidays(self.from.to_date - 1, self.to.to_date + 1)
-    days = WorkingHours.working_time_between(self.from, self.to) / Marcel::SECONDS_IN_DAY
-    return (2 * days).ceil / 2.0
+    days = (WorkingHours.working_time_between(self.from, self.to) / Marcel::SECONDS_IN_DAY -
+            Marcel::holidays(self.from.to_date - 1, self.to.to_date + 1).count)
+    return (2.0 * days).ceil / 2.0
   end
 
   def paid_vacation_days
@@ -53,6 +65,15 @@ class Vacation < ActiveRecord::Base
 
   def recup_days
     self.activity.use_recup_days ? self.days : 0
+  end
+
+
+  def eating_tickets
+    if not self.activity.use_eating_tickets?
+      0
+    else
+      Marcel::working_days_between self.from.beginning_of_day, self.to.end_of_day
+    end
   end
 
   def validate(status=true)
@@ -117,6 +138,27 @@ class Vacation < ActiveRecord::Base
 
   def activity
     super or VacationType.none
+  end
+
+  def self.report from, to, users=nil, vacation_types=nil
+    users ||= User.status(User::STATUS_ACTIVE).to_a
+    vacation_types ||= VacationType.all.to_a
+
+    vacation_values = vacation_types.reduce Hash.new do |memo, type|
+      memo.merge type.id => 0
+    end
+    vacations = Vacation.validated.between(from, to).includes(:activity)
+
+    users.reduce Hash.new do |reports, user|
+      reports.merge user.id => {
+        vacations: vacation_values.clone,
+        eating_tickets: Marcel::EatingTickets::user_eating_tickets(user, from, to, vacations)
+      }
+    end.tap do |reports|
+      vacations.each do |vacation|
+        reports[vacation.user_id][:vacations][vacation.activity_id] += vacation.days
+      end
+    end
   end
 
 end
