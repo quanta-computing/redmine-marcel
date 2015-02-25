@@ -12,7 +12,7 @@ module Marcel
     ]
 
     def self.find_users_to_remind(remind_level=ALERT_HARD, min_time=MIN_LOGGED_HOURS, time=Time.now)
-      return User.where("time_remind_level >= #{remind_level}").select(&:active?).map do |user|
+      User.where("time_remind_level >= #{remind_level}").select(&:active?).map do |user|
         last_worked_day = Marcel::last_worked_day(user, time)
         {
           user: user,
@@ -28,9 +28,6 @@ module Marcel
           "",
           "You logged only #{remind[:hours]} hours on #{remind[:last_worked_day].to_date}... :(",
           "Please update your time entries on https://redmine.quanta.gr ! :3",
-          "--",
-          "Redmine painfull reminder",
-          ""
         ].join("\n")
     end
 

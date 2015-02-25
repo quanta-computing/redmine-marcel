@@ -32,7 +32,7 @@ module Marcel
   end
 
   def self.is_working?(user, t=Time.now, vacations=nil)
-    vacations ||= Vacation.where(user_id: user.id).where("? BETWEEN `from` AND `to`", t).to_a
+    vacations ||= Vacation.where(user_id: user).where("? BETWEEN `from` AND `to`", t).to_a
     return ((not Holidays.on(t, :fr).any?) and
             (not vacations.any?{|v| v.from <= t and v.to >= t}) and
             WorkingHours.in_working_hours? t)
