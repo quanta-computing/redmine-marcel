@@ -23,6 +23,7 @@ module Marcel
   end
 
   def self.last_worked_day(user, day=Time.now)
+    day = Time.new day.year, day.month, day.day, 16 # We set the time to 15:00 to avoid infinite loop with is_working?
     Vacation.where(user_id: user.id, status: true).to_a.tap do |vacations|
       begin
         day -= 1.days
