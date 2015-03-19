@@ -138,6 +138,10 @@ class Vacation < ActiveRecord::Base
     super or VacationType.none
   end
 
+  def user
+    super or User.anonymous
+  end
+
   def self.report from, to, users=nil, vacation_types=nil
     users ||= User.status(User::STATUS_ACTIVE).to_a
     vacation_types ||= VacationType.all.to_a
