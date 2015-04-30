@@ -14,13 +14,14 @@ class Vacation < ActiveRecord::Base
 
   after_destroy :delete_gcal_event
 
+  # Gcal events are created asynchronously via Rake
   scope :gcal_update_needed, -> do
     self.where %q{(gcal_event_id IS NULL AND status = 1)
                   OR (gcal_event_id IS NOT NULL AND status = 0)}
   end
 
   scope :between, lambda { |from, to|
-    self.where("`from` >= ?", from).where("`to` <= ?", to)
+    self.where("`from` >= ?", from + from.gmtoff).where("`to` <= ?", to + to.gmtoff)
   }
 
   scope :of_users, lambda { |users|
@@ -108,6 +109,17 @@ class Vacation < ActiveRecord::Base
     if self.gcal_event_id.present?
       self.update_gcal_event :delete
     end
+  end
+
+  def create_or_update
+    if self.to.month != self.from.month
+      self.dup.tap do |new_vacation|
+        self.to = self.from.end_of_month
+        new_vacation.from = (self.to + 1.month).beginning_of_month
+        new_vacation.save!
+      end
+    end
+    super
   end
 
   def validated?
