@@ -7,9 +7,9 @@
 </div>
 
 
-<% @vacations.keys.sort {|k| k ? 1 : 0 }.each do |status| %>
+<% [:pending, :current, :ended].each do |status| %>
 <div class="section">
-  <h3><%= status ? 'Vacations' : 'Pending validation' %></h3>
+  <h3><%= @vacations_title[status] %></h3>
 
   <% if not @vacations[status].length.zero? %>
     <table class="list">
@@ -25,7 +25,7 @@
     </table>
   <% else %>
     <p>
-      No <%= status ? '' : 'pending ' %>vacations
+      No <%= "#{status} vacations" %>
     </p>
   <% end %>
 </div>

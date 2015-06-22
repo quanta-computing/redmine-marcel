@@ -2,9 +2,22 @@ class VacationsController < ApplicationController
   layout 'base'
 
   def index
-    @vacations = Vacation.order('`from` DESC').to_a.group_by &:validator_id?
-    @vacations[true] ||= []
-    @vacations[false] ||= []
+    raw_vacations = Vacation.order('`from` ASC').to_a.group_by &:validator_id?
+    raw_vacations[true] ||= []
+    raw_vacations[false] ||= []
+    @vacations = {}
+    @vacations[:pending] = raw_vacations[false]
+    @vacations[:current] = raw_vacations[true].select do |vacation|
+      vacation.to >= Time.now
+    end
+    @vacations[:ended] = (raw_vacations[true] - @vacations[:current]).sort do |x, y|
+      y.from <=> x.from
+    end
+    @vacations_title = {
+      pending: "Pending validation",
+      current: "In progress / Arriving",
+      ended: "Past"
+    }
   end
 
   def new
