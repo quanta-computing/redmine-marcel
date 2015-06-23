@@ -36,8 +36,17 @@
 <h4>Remaining days</h4>
 <%= render 'available_days', vacation: @vacation %>
 
+<h4>Actions</h4>
+<div class="admin-actions actions">
+  <%= render 'actions_form', vacation: @vacation %>
+</div>
+
 <div class="actions">
   <%= link_to 'Edit', edit_vacation_url(@vacation) %>
   <br />
   <%= link_to 'Back', vacations_url %>
 </div>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'marcel.css', plugin: 'marcel' %>
+<% end %>

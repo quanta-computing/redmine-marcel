@@ -30,3 +30,7 @@ span.filter + span.filter {
 .pull-right {
   float: right;
 }
+
+.admin-actions {
+  margin: 20px 0px;
+}
