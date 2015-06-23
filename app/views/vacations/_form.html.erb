@@ -13,7 +13,9 @@
 
   <div class="field">
     <% if Marcel::is_admin? User.current %>
-      <%= f.collection_select :user_id, User.all.to_a.select { |u| u.active? }, :id, :name, selected: @vacation.user.present? ? [@vacation.user.id, @vacation.user.name] : [User.current.id, User.current.name] %>
+      <%= f.collection_select :user_id, User.all.to_a.select { |u| u.active? }, :id, :name,
+        selected: (@vacation.new_record? ? [User.current.id, User.current.name] :
+        [@vacation.user.id, @vacation.user.name]) %>
     <% else %>
       <%= f.hidden_field :user_id, value: User.current.id %>
     <% end %>
