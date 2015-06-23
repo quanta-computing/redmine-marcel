@@ -12,7 +12,6 @@ module Marcel
               custom_field_id: custom_field.id,
               customized_id: user.id,
               ).where("value != ''").first.value rescue user.login)
-      '@korrigan' #TMP
     end
 
     def self.send_message users, message, slack_custom_field=nil
