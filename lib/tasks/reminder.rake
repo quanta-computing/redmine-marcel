@@ -1,22 +1,13 @@
-require 'slack'
-
 namespace :marcel do
   namespace :reminder do
 
     desc 'Remind all users to update their times (via slack)'
     task slack: :environment do
-      CustomField.where(name: 'slack').first.tap do |slack_custom_field|
-        Slack.token = 'xoxp-2367863251-2368652112-3225378160-241096'
-        Marcel::Reminder::find_users_to_remind(Marcel::Reminder::ALERT_HARD).each do |report|
-          if Marcel::is_working? report[:user]
-            Slack.chat_postMessage channel: '@' + (CustomValue.where(
-                                                    custom_field_id: slack_custom_field.id,
-                                                    customized_id: report[:user].id,
-                                                   ).where("value != ''").first.value rescue report[:user].login),
-              text: Marcel::Reminder::format_remind_message(report),
-              username: 'Redminder'
-          end
-        end
+      slack_username_field = CustomField.where(name: 'slack').first
+      Marcel::Reminder::find_users_to_remind(Marcel::Reminder::ALERT_HARD).each do |report|
+        Marcel::Slacker.send_message(
+          report[:user], Marcel::Reminder::format_remind_message(report),
+          slack_username_field) if Marcel::is_working? report[:user]
       end
     end
 

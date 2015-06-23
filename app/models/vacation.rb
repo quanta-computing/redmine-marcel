@@ -13,6 +13,7 @@ class Vacation < ActiveRecord::Base
   validate :to_greater_than_from
 
   after_destroy :delete_gcal_event
+  after_create :notify_marcel_admins
 
   # Gcal events are created asynchronously via Rake
   scope :gcal_update_needed, -> do
@@ -86,6 +87,7 @@ class Vacation < ActiveRecord::Base
     elsif self.gcal_event_id.present? and not status
       self.delete_gcal_event
     end
+    Marcel::Slacker.send_message self.user, self.format_validation_message
     return ret
   end
 
@@ -146,12 +148,28 @@ class Vacation < ActiveRecord::Base
     "#{self.comment}\n\nValidated by: #{self.validator_name}"
   end
 
+  def format_validation_message
+    "Hi #{self.user.name} !\nYour vacation ##{self.id} (#{self.activity.name
+    } between #{self.from} and #{self.to}) has been #{
+    self.validated? ? 'validated' : 'rejected'} by #{self.validator.name}"
+  end
+
+  def format_pending_validation_message
+    "Hi!\n#{self.user.name} asked for some #{self.activity.name} from #{self.from} to #{self.to
+    }\nWould you mind checking this at https://redmine.quanta.gr/vacations/#{self.id} ?"
+  end
+
   def activity
     super or VacationType.none
   end
 
   def user
     super or User.anonymous
+  end
+
+  def notify_marcel_admins
+    Marcel::Slacker.send_message User.in_group(Setting.plugin_marcel[:allowed_edit_group_id]).to_a,
+      self.format_pending_validation_message
   end
 
   def self.report from, to, users=nil, vacation_types=nil
