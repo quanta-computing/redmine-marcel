@@ -17,5 +17,5 @@ Redmine::Plugin.register :marcel do
 
   User.safe_attributes 'paid_vacation_days', 'recup_days', 'time_remind_level', if: lambda {|user, current_user| Marcel::is_admin?(current_user)}
   WorkingHours::Config.working_hours = Marcel::WORKING_HOURS
-  WorkingHours::Config.time_zone = 'Paris'
+  WorkingHours::Config.time_zone = ActiveSupport::TimeZone[Marcel::TIMEZONE]
 end

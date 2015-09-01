@@ -40,7 +40,10 @@ module Marcel
   end
 
   def self.holidays(from, to)
-    Holidays.between(from, to, :fr).map { |h| h[:date] }
+    Holidays.between(from, to, :fr).reduce([]) do |holidays, h|
+      holidays << h[:date] if WorkingHours.working_day?(h[:date])
+      holidays
+    end
   end
 
   def self.working_days_between(from, to)
