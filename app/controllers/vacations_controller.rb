@@ -23,11 +23,13 @@ class VacationsController < ApplicationController
   def new
     @vacation = Vacation.new
     @activities = VacationType.all
+    @users = Marcel::users if Marcel::is_admin?(User.current)
   end
 
   def edit
     @vacation = Vacation.find params[:id]
     @activities = VacationType.all
+    @users = Marcel::users if Marcel::is_admin?(User.current)
   end
 
   def show
@@ -37,6 +39,7 @@ class VacationsController < ApplicationController
   def update
     @vacation = Vacation.find params[:id]
     @activities = VacationType.all
+    @users = Marcel::users if Marcel::is_admin?(User.current)
     params[:vacation].delete :status
     params[:vacation].delete :gcal_event_id
     if not @vacation.updatable_by? User.current
@@ -113,12 +116,7 @@ class VacationsController < ApplicationController
     if @from > @to
       redirect_to report_vacations_url, alert: 'Error: "From" cannot be greater than "To"'
     end
-    Setting.plugin_marcel[:reporting_group_id].tap do |reporting_group|
-      User.status(User::STATUS_ACTIVE).tap do |scope|
-        scope = scope.in_group(reporting_group) unless reporting_group.nil?
-        @users = scope.to_a
-      end
-    end
+    @users = Marcel::users.to_a
     @vacation_types = VacationType.all.to_a
     @user_reports = Vacation.report @from, @to, @users, @vacation_types
   end
