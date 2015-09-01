@@ -17,9 +17,24 @@ module Marcel
     }
 
 
+  def self.is_in_group? user, gid
+    (not gid.nil?) && user.is_or_belongs_to?(Group.find(gid))
+  end
+
   def self.is_admin?(user)
-    gid = Setting.plugin_marcel[:allowed_edit_group_id]
-    return ((not gid.nil?) and user.is_or_belongs_to?(Group.where(id: gid).first))
+    self.is_in_group? user, Setting.plugin_marcel[:allowed_edit_group_id]
+  end
+
+  def self.is_marcel_user?(user)
+    gid = Setting.plugin_marcel[:reporting_group_id]
+    return true unless gid
+    self.is_in_group? user, gid
+  end
+
+  def self.users
+    gid = Setting.plugin_marcel[:reporting_group_id]
+    return User.all unless gid
+    User.in_group Group.find(gid)
   end
 
   def self.last_worked_day(user, day=Time.now)
