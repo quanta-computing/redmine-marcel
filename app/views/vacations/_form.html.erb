@@ -12,7 +12,7 @@
   <% end %>
 
   <div class="field">
-    <% unless @users.empty? %>
+    <% if @users && !@users.empty? %>
       <%= f.collection_select :user_id, @users, :id, :name,
         selected: (@vacation.new_record? ? [User.current.id, User.current.name] :
         [@vacation.user.id, @vacation.user.name]) %>
