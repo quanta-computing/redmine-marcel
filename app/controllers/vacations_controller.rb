@@ -44,8 +44,7 @@ class VacationsController < ApplicationController
     params[:vacation].delete :gcal_event_id
     if not @vacation.updatable_by? User.current
       redirect_to @vacation, alert: 'You cannot update this (permission denied)'
-    end
-    if @vacation.update_attributes params[:vacation]
+    elsif @vacation.update_attributes params[:vacation]
       redirect_to @vacation
     else
       render 'edit'
